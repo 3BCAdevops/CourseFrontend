@@ -197,3 +197,13 @@ render(<CourseList />);
 expect(await screen.findByText(/No courses found/i)).toBeInTheDocument();
 });
 
+/* NEW TEST TO INCREASE CONDITION COVERAGE */
+test("handles response not ok", async () => {
+fetch.mockResolvedValueOnce({
+ok: false
+});
+
+render(<CourseList />);
+
+expect(await screen.findByText(/Failed to load courses/i)).toBeInTheDocument();
+});

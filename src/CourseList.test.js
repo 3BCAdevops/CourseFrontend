@@ -4,7 +4,7 @@ import CourseList from "./CourseList";
 
 beforeEach(() => {
 globalThis.fetch = jest.fn();
-jest.spyOn(window, "alert").mockImplementation(() => {});
+jest.spyOn(globalThis, "alert").mockImplementation(() => {});
 delete globalThis.location;
 globalThis.location = { reload: jest.fn() };
 });
@@ -163,7 +163,7 @@ const enrollButton = await screen.findByText("Enroll");
 userEvent.click(enrollButton);
 
 await waitFor(() => {
-expect(window.alert).toHaveBeenCalled();
+expect(globalThis.alert).toHaveBeenCalled();
 });
 });
 
@@ -182,7 +182,7 @@ const enrollButton = await screen.findByText("Enroll");
 userEvent.click(enrollButton);
 
 await waitFor(() => {
-expect(window.location.reload).toHaveBeenCalled();
+expect(globalThis.location.reload).toHaveBeenCalled();
 });
 });
 

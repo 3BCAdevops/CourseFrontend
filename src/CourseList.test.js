@@ -74,8 +74,6 @@ expect(fetch).toHaveBeenCalled();
 });
 });
 
-/* ---------- FIXED TESTS ---------- */
-
 test("create course validation works", async () => {
 fetch.mockResolvedValueOnce({
 ok: true,
@@ -84,7 +82,6 @@ json: async () => [],
 
 render(<CourseList />);
 
-// wait until page loads
 await screen.findByText(/no courses/i);
 
 const addButton = screen.getByText(/add/i);
@@ -108,7 +105,6 @@ json: async () => [],
 
 render(<CourseList />);
 
-// wait until UI loads
 await screen.findByText(/no courses/i);
 
 const inputs = screen.getAllByRole("textbox");
@@ -126,3 +122,70 @@ await waitFor(() => {
 expect(fetch).toHaveBeenCalled();
 });
 });
+
+/* -------- EXTRA TESTS FOR COVERAGE -------- */
+
+test("shows error when create course API fails", async () => {
+fetch
+.mockResolvedValueOnce({
+ok: true,
+json: async () => [],
+})
+.mockResolvedValueOnce({
+ok: false,
+});
+
+render(<CourseList />);
+
+await screen.findByText(/no courses/i);
+
+const inputs = screen.getAllByRole("textbox");
+const addButton = screen.getByText(/add/i);
+
+inputs[0].value = "Python";
+inputs[0].dispatchEvent(new Event("input", { bubbles: true }));
+
+inputs[1].value = "Programming";
+inputs[1].dispatchEvent(new Event("input", { bubbles: true }));
+
+addButton.click();
+
+await waitFor(() => {
+expect(fetch).toHaveBeenCalled();
+});
+});
+
+test("handles invalid API response safely", async () => {
+fetch.mockResolvedValueOnce({
+ok: true,
+json: async () => ({ message: "invalid" }),
+});
+
+render(<CourseList />);
+
+await waitFor(() => {
+expect(screen.getByText(/invalid data from server/i)).toBeInTheDocument();
+});
+});
+
+test("shows alert when enroll fails", async () => {
+fetch
+.mockResolvedValueOnce({
+ok: true,
+json: async () => [{ id: 1, name: "React", enrolledCount: 5 }],
+})
+.mockResolvedValueOnce({
+ok: false,
+});
+
+render(<CourseList />);
+
+const enrollButtons = await screen.findAllByText(/Enroll/i);
+
+enrollButtons[0].click();
+
+await waitFor(() => {
+expect(fetch).toHaveBeenCalled();
+});
+});
+

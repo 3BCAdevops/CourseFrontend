@@ -2,7 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import EnrollmentList from "./EnrollmentList";
 
 beforeEach(() => {
-  global.fetch = jest.fn();
+  globalThis.fetch = jest.fn();
 });
 
 test("loads and displays enrollments", async () => {

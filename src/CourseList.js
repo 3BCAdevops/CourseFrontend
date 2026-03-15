@@ -61,7 +61,7 @@ function CourseList() {
 
       alert("Enrolled successfully");
       
-      window.location.reload();
+     globalThis.location.reload();
     } catch (err) {
       console.error(err);
       alert("Enroll failed");

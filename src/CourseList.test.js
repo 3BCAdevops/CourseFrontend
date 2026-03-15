@@ -3,10 +3,10 @@ import userEvent from "@testing-library/user-event";
 import CourseList from "./CourseList";
 
 beforeEach(() => {
-global.fetch = jest.fn();
+globalThis.fetch = jest.fn();
 jest.spyOn(window, "alert").mockImplementation(() => {});
-delete window.location;
-window.location = { reload: jest.fn() };
+delete globalThis.location;
+globalThis.location = { reload: jest.fn() };
 });
 
 afterEach(() => {

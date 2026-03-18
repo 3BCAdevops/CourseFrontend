@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - frontend-enrollment-feature 
   pull_request:
     branches:
       - main

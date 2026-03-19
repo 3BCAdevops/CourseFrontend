@@ -1,17 +1,19 @@
-/* Center heading */
+body {
+  margin: 0;
+  font-family: Arial;
+}
+
 .main-heading {
   text-align: center;
   margin-bottom: 20px;
 }
 
-/* Layout: left & right */
 .content {
   display: flex;
   justify-content: space-between;
   gap: 20px;
 }
 
-/* Course & Enrollment boxes */
 .content > div {
   width: 48%;
   background: #f9f9f9;
@@ -19,27 +21,11 @@
   border-radius: 8px;
 }
 
-/* Button style (royal blue) */
 button {
   background-color: #4a6cf7;
   color: white;
   border: none;
-  padding: 6px 12px;
-  margin-left: 5px;
+  padding: 6px 10px;
   border-radius: 5px;
   cursor: pointer;
-}
-
-/* Button hover */
-button:hover {
-  background-color: #2f4dd0;
-}
-
-/* Input styling */
-input {
-  padding: 6px;
-  margin: 5px 0;
-  width: 90%;
-  border-radius: 5px;
-  border: 1px solid #ccc;
 }

@@ -6,31 +6,52 @@ function EnrollmentList() {
   const [enrollments, setEnrollments] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // NEW STATES
   const [search, setSearch] = useState("");
   const [droppingId, setDroppingId] = useState(null);
 
+  // 🔥 SAFE API CALL
   const loadEnrollments = async () => {
-    setLoading(true);
-    const res = await fetch(`${API_BASE}/api/enrollments`);
-    const data = await res.json();
-    setEnrollments(data);
-    setLoading(false);
+    try {
+      setLoading(true);
+
+      const res = await fetch(`${API_BASE}/api/enrollments`);
+
+      if (!res.ok) throw new Error("API failed");
+
+      const data = await res.json();
+
+      if (Array.isArray(data)) {
+        setEnrollments(data);
+      } else {
+        setEnrollments([]);
+      }
+
+    } catch (err) {
+      console.error("Enrollment API error:", err);
+      setEnrollments([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     loadEnrollments();
   }, []);
 
+  // 🔥 DROP FUNCTION
   const handleDrop = async (id) => {
     try {
       setDroppingId(id);
+
       const res = await fetch(`${API_BASE}/api/enrollments/${id}`, {
         method: "DELETE",
       });
+
       if (!res.ok) throw new Error("Drop failed");
+
       await loadEnrollments();
       alert("Enrollment dropped");
+
     } catch (e) {
       console.error(e);
       alert("Could not drop enrollment");
@@ -39,7 +60,7 @@ function EnrollmentList() {
     }
   };
 
-  // ✅ FIXED SEARCH (handles string + number safely)
+  // 🔥 SEARCH FILTER (SAFE)
   const filteredEnrollments = enrollments.filter((e) =>
     (e.courseId?.toString().includes(search) ||
       e.studentId?.toString().includes(search))
@@ -51,16 +72,16 @@ function EnrollmentList() {
     <div>
       <h2>Enrollments</h2>
 
-      {/* Total Count */}
+      {/* TOTAL COUNT */}
       <p>Total Enrollments: {enrollments.length}</p>
 
-      {/* Search */}
+      {/* SEARCH BAR */}
       <input
         type="text"
         placeholder="Search by courseId or studentId"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        style={{ marginBottom: "10px", padding: "5px" }}
+        style={{ marginBottom: "10px", padding: "5px", width: "90%" }}
       />
 
       {filteredEnrollments.length === 0 && <p>No enrollments found.</p>}

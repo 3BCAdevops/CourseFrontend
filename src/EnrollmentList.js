@@ -9,7 +9,7 @@ function EnrollmentList() {
   const [search, setSearch] = useState("");
   const [droppingId, setDroppingId] = useState(null);
 
-  // 🔥 SAFE API CALL
+  // 🔥 LOAD DATA
   const loadEnrollments = async () => {
     try {
       setLoading(true);
@@ -20,6 +20,8 @@ function EnrollmentList() {
 
       const data = await res.json();
 
+      console.log("API DATA:", data); // 👈 check in console
+
       if (Array.isArray(data)) {
         setEnrollments(data);
       } else {
@@ -27,7 +29,7 @@ function EnrollmentList() {
       }
 
     } catch (err) {
-      console.error("Enrollment API error:", err);
+      console.error("API error:", err);
       setEnrollments([]);
     } finally {
       setLoading(false);
@@ -38,7 +40,7 @@ function EnrollmentList() {
     loadEnrollments();
   }, []);
 
-  // 🔥 DROP FUNCTION
+  // 🔥 DROP
   const handleDrop = async (id) => {
     try {
       setDroppingId(id);
@@ -60,16 +62,17 @@ function EnrollmentList() {
     }
   };
 
+  // 🔥 SEARCH (FINAL FIX)
   const filteredEnrollments = enrollments.filter((e) => {
-  const searchValue = search.trim();
+    const searchValue = search.trim().toLowerCase();
 
-  if (!searchValue) return true; // show all when empty
+    if (!searchValue) return true;
 
-  return (
-    e.courseId?.toString() === searchValue ||
-    e.studentId?.toString() === searchValue
-  );
-});
+    return (
+      String(e.courseId).toLowerCase().includes(searchValue) ||
+      String(e.studentId).toLowerCase().includes(searchValue)
+    );
+  });
 
   if (loading) return <p>Loading enrollments...</p>;
 
@@ -80,7 +83,7 @@ function EnrollmentList() {
       {/* TOTAL COUNT */}
       <p>Total Enrollments: {enrollments.length}</p>
 
-      {/* SEARCH BAR */}
+      {/* SEARCH */}
       <input
         type="text"
         placeholder="Search by courseId or studentId"

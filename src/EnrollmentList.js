@@ -6,7 +6,7 @@ function EnrollmentList() {
   const [enrollments, setEnrollments] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // NEW STATES (added feature)
+  // NEW STATES
   const [search, setSearch] = useState("");
   const [droppingId, setDroppingId] = useState(null);
 
@@ -24,7 +24,7 @@ function EnrollmentList() {
 
   const handleDrop = async (id) => {
     try {
-      setDroppingId(id); // prevent double click
+      setDroppingId(id);
       const res = await fetch(`${API_BASE}/api/enrollments/${id}`, {
         method: "DELETE",
       });
@@ -39,9 +39,10 @@ function EnrollmentList() {
     }
   };
 
-  // SEARCH FILTER (new feature)
+  // ✅ FIXED SEARCH (handles string + number safely)
   const filteredEnrollments = enrollments.filter((e) =>
-    `${e.courseId}`.includes(search) || `${e.studentId}`.includes(search)
+    (e.courseId?.toString().includes(search) ||
+      e.studentId?.toString().includes(search))
   );
 
   if (loading) return <p>Loading enrollments...</p>;
@@ -50,10 +51,10 @@ function EnrollmentList() {
     <div>
       <h2>Enrollments</h2>
 
-      {/* NEW FEATURE: Total count */}
+      {/* Total Count */}
       <p>Total Enrollments: {enrollments.length}</p>
 
-      {/* NEW FEATURE: Search */}
+      {/* Search */}
       <input
         type="text"
         placeholder="Search by courseId or studentId"
@@ -62,7 +63,7 @@ function EnrollmentList() {
         style={{ marginBottom: "10px", padding: "5px" }}
       />
 
-      {filteredEnrollments.length === 0 && <p>No enrollments yet.</p>}
+      {filteredEnrollments.length === 0 && <p>No enrollments found.</p>}
 
       <ul>
         {filteredEnrollments.map((e) => (

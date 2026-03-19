@@ -1,4 +1,8 @@
 /* Center heading */
+body {
+  background-color: red !important;
+}
+
 .main-heading {
   text-align: center;
   margin-bottom: 20px;

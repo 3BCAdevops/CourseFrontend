@@ -60,11 +60,16 @@ function EnrollmentList() {
     }
   };
 
-  // 🔥 SEARCH FILTER (SAFE)
-  const filteredEnrollments = enrollments.filter((e) =>
-    (e.courseId?.toString().includes(search) ||
-      e.studentId?.toString().includes(search))
+  const filteredEnrollments = enrollments.filter((e) => {
+  const searchValue = search.trim();
+
+  if (!searchValue) return true; // show all when empty
+
+  return (
+    e.courseId?.toString() === searchValue ||
+    e.studentId?.toString() === searchValue
   );
+});
 
   if (loading) return <p>Loading enrollments...</p>;
 

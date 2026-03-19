@@ -63,16 +63,16 @@ function EnrollmentList() {
   };
 
   // 🔥 SEARCH (FINAL FIX)
-  const filteredEnrollments = enrollments.filter((e) => {
-    const searchValue = search.trim().toLowerCase();
+ const filteredEnrollments = enrollments.filter((e) => {
+  const searchValue = search.trim().toLowerCase();
 
-    if (!searchValue) return true;
+  if (!searchValue) return true;
 
-    return (
-      String(e.courseId).toLowerCase().includes(searchValue) ||
-      String(e.studentId).toLowerCase().includes(searchValue)
-    );
-  });
+  const idMatch = e.id.toString().includes(searchValue);
+  const nameMatch = e.name.toLowerCase().includes(searchValue);
+
+  return idMatch || nameMatch;
+});
 
   if (loading) return <p>Loading enrollments...</p>;
 

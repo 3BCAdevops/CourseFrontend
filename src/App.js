@@ -1,6 +1,7 @@
 import React from "react";
 import CourseList from "./CourseList";
 import EnrollmentList from "./EnrollmentList";
+import "./App.css";
 
 
 function App() {

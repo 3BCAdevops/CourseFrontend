@@ -20,7 +20,7 @@ function EnrollmentList() {
 
       const data = await res.json();
 
-      console.log("API DATA:", data); // 👈 check in console
+      console.log("API DATA:", data);
 
       if (Array.isArray(data)) {
         setEnrollments(data);
@@ -62,17 +62,14 @@ function EnrollmentList() {
     }
   };
 
-  // 🔥 SEARCH (FINAL FIX)
- const filteredEnrollments = enrollments.filter((e) => {
-  const searchValue = search.trim().toLowerCase();
+  // 🔥 FINAL SEARCH (ONLY BY ID)
+  const filteredEnrollments = enrollments.filter((e) => {
+    const searchValue = search.trim();
 
-  if (!searchValue) return true;
+    if (!searchValue) return true;
 
-  const idMatch = e.id.toString().includes(searchValue);
-  const nameMatch = e.name.toLowerCase().includes(searchValue);
-
-  return idMatch || nameMatch;
-});
+    return e?.id?.toString() === searchValue;
+  });
 
   if (loading) return <p>Loading enrollments...</p>;
 
@@ -86,7 +83,7 @@ function EnrollmentList() {
       {/* SEARCH */}
       <input
         type="text"
-        placeholder="Search by courseId or studentId"
+        placeholder="Search by ID only"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         style={{ marginBottom: "10px", padding: "5px", width: "90%" }}

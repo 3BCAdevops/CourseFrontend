@@ -21,10 +21,10 @@ const fillCourseForm = async (name, desc) => {
 };
 
 beforeEach(() => {
-  globalThis.fetch = jest.fn();
-  jest.spyOn(globalThis, "alert").mockImplementation(() => {});
-  delete globalThis.location;
-  globalThis.location = { reload: jest.fn() };
+  window.fetch = jest.fn();
+  jest.spyOn(window, "alert").mockImplementation(() => {});
+  delete window.location;
+  window.location = { reload: jest.fn() };
 });
 
 afterEach(() => {
@@ -115,7 +115,7 @@ test("shows alert when enroll fails", async () => {
   const enrollButton = await screen.findByText("Enroll");
   userEvent.click(enrollButton);
 
-  await waitFor(() => expect(globalThis.alert).toHaveBeenCalled());
+  await waitFor(() => expect(window.alert).toHaveBeenCalled());
 });
 
 test("handles enroll success", async () => {
@@ -126,7 +126,7 @@ test("handles enroll success", async () => {
   const enrollButton = await screen.findByText("Enroll");
   userEvent.click(enrollButton);
 
-  await waitFor(() => expect(globalThis.location.reload).toHaveBeenCalled());
+  await waitFor(() => expect(window.location.reload).toHaveBeenCalled());
 });
 
 test("shows message when course list becomes empty", async () => {

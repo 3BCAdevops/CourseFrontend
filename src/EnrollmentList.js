@@ -6,43 +6,101 @@ function EnrollmentList() {
   const [enrollments, setEnrollments] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const [search, setSearch] = useState("");
+  const [droppingId, setDroppingId] = useState(null);
+
+  // 🔥 LOAD DATA
   const loadEnrollments = async () => {
-    setLoading(true);
-    const res = await fetch(`${API_BASE}/api/enrollments`);
-    const data = await res.json();
-    setEnrollments(data);
-    setLoading(false);
+    try {
+      setLoading(true);
+
+      const res = await fetch(`${API_BASE}/api/enrollments`);
+
+      if (!res.ok) throw new Error("API failed");
+
+      const data = await res.json();
+
+      console.log("API DATA:", data);
+
+      if (Array.isArray(data)) {
+        setEnrollments(data);
+      } else {
+        setEnrollments([]);
+      }
+
+    } catch (err) {
+      console.error("API error:", err);
+      setEnrollments([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     loadEnrollments();
   }, []);
 
+  // 🔥 DROP
   const handleDrop = async (id) => {
     try {
+      setDroppingId(id);
+
       const res = await fetch(`${API_BASE}/api/enrollments/${id}`, {
         method: "DELETE",
       });
+
       if (!res.ok) throw new Error("Drop failed");
+
       await loadEnrollments();
       alert("Enrollment dropped");
+
     } catch (e) {
       console.error(e);
       alert("Could not drop enrollment");
+    } finally {
+      setDroppingId(null);
     }
   };
+
+  // 🔥 FINAL SEARCH (ONLY BY ID)
+  const filteredEnrollments = enrollments.filter((e) => {
+    const searchValue = search.trim();
+
+    if (!searchValue) return true;
+
+    return e?.id?.toString() === searchValue;
+  });
 
   if (loading) return <p>Loading enrollments...</p>;
 
   return (
     <div>
       <h2>Enrollments</h2>
-      {enrollments.length === 0 && <p>No enrollments yet.</p>}
+
+      {/* TOTAL COUNT */}
+      <p>Total Enrollments: {enrollments.length}</p>
+
+      {/* SEARCH */}
+      <input
+        type="text"
+        placeholder="Search by ID only"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        style={{ marginBottom: "10px", padding: "5px", width: "90%" }}
+      />
+
+      {filteredEnrollments.length === 0 && <p>No enrollments found.</p>}
+
       <ul>
-        {enrollments.map((e) => (
+        {filteredEnrollments.map((e) => (
           <li key={e.id}>
             ID {e.id} – courseId: {e.courseId}, studentId: {e.studentId}{" "}
-            <button onClick={() => handleDrop(e.id)}>Drop</button>
+            <button
+              onClick={() => handleDrop(e.id)}
+              disabled={droppingId === e.id}
+            >
+              {droppingId === e.id ? "Dropping..." : "Drop"}
+            </button>
           </li>
         ))}
       </ul>
